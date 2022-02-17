@@ -54,26 +54,31 @@ runs:
       run: |
            pip install ${{ inputs.PYTHON_LIBS }}
            export PYTHON=$(which python)
+      shell: bash
 
     # Apt-get update if necessary
     - if: ${{ (inputs.PLOTS != '') || (inputs.LATEX) || (inputs.GNUPLOT) }}
       name: Updating APT 👷‍♂️...
       run: sudo apt-get update -qq
+      shell: bash
 
     # QT dependencies for Plots with GR backend
     - if: ${{ inputs.PLOTS != '' }}
       name: Installing QT5 💻...
       run: sudo apt-get install -y qt5-default
+      shell: bash
 
     # LaTeX* deps for PGFPlotsX etc
     - if: ${{ inputs.LATEX }}
       name: Installing LaTeX 🌴...
       run: sudo apt install -y pdf2svg texlive-latex-base texlive-binaries texlive-pictures texlive-latex-extra texlive-luatex
+      shell: bash
 
     # Gnuplot for Gaston etc
     - if: ${{ inputs.GNUPLOT }}
       name: Install GnuPlot 💻
       run: sudo apt-get install -y gnuplot
+      shell: bash
 
     # ================ #
     # BUILDING WEBSITE #
@@ -102,6 +107,7 @@ runs:
                       "${{ inputs.PREVIEW }}"
                       )
                     );'
+      shell: bash
 
     # ========== #
     # DEPLOYMENT #
@@ -116,10 +122,12 @@ runs:
 
     - name: Move TTFX results
       run: yes | cp -rf ttfx/ttfx/* ${{ inputs.SITE_FOLDER }}/__site/ttfx
+      shell: bash
 
     # Deployment
     - name: Avoid Jekyll build
       run: touch ${{ inputs.SITE_FOLDER }}/__site/.nojekyll
+      shell: bash
 
     - name: Deploy 🚀
       uses: JamesIves/github-pages-deploy-action@releases/v4
@@ -127,4 +135,3 @@ runs:
         BRANCH: gh-pages
         FOLDER: ${{ inputs.SITE_FOLDER }}/__site
         TARGET-FOLDER: "${{ inputs.PREVIEW }}"
-
