@@ -117,8 +117,13 @@ runs:
         ref: gh-ttfx
         path: ttfx
 
-    - run: yes | cp -rf ttfx/* ${{ inputs.SITE_FOLDER }}/__site/.
+    - run: rm -rf ${{ inputs.SITE_FOLDER }}/__site/ttfx
       shell: bash
+      continue-on-error: true
+
+    - run: mv ttfx/ttfx ${{ inputs.SITE_FOLDER }}/__site/.
+      shell: bash
+      continue-on-error: true
 
     # Deployment
     - run: touch ${{ inputs.SITE_FOLDER }}/__site/.nojekyll
