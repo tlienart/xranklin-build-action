@@ -111,14 +111,14 @@ runs:
     # DEPLOYMENT #
     # ========== #
 
-    # TTFX Experiment results
-    # - uses: actions/checkout@v2
-    #   with:
-    #     ref: gh-ttfx
-    #     path: ttfx
-    #
-    # - run: yes | cp -rf ttfx/* ${{ inputs.SITE_FOLDER }}/__site/.
-    #   shell: bash
+    TTFX Experiment results
+    - uses: actions/checkout@v2
+      with:
+        ref: gh-ttfx
+        path: ttfx
+
+    - run: yes | cp -rf ttfx/* ${{ inputs.SITE_FOLDER }}/__site/.
+      shell: bash
 
     # Deployment
     - run: touch ${{ inputs.SITE_FOLDER }}/__site/.nojekyll
