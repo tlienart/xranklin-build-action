@@ -117,9 +117,9 @@ runs:
         ref: gh-ttfx
         path: ttfx
 
+    # or pipe ensures continue on fail
     - run: rm -rf ${{ inputs.SITE_FOLDER }}/__site/ttfx || true
       shell: bash
-
     - run: mv ttfx/ttfx ${{ inputs.SITE_FOLDER }}/__site/. || true
       shell: bash
 
