@@ -1,0 +1,130 @@
+name: "Build website"
+
+inputs:
+  SITE_FOLDER:
+    required: true
+  BASE_URL_PREFIX:
+    required: true
+  PREVIEW:
+    required: true
+  BRANCH:
+    required: true
+  PYTHON_LIBS:
+    required: true
+  PLOTS:
+    required: true
+  LATEX:
+    required: true
+  GNUPLOT:
+    required: true
+  CLEAR_CACHE:
+    required: true
+  CACHE_KEY:
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    # =========== #
+    # CACHE SETUP #
+    # =========== #
+
+    - name: Cache 📖
+      uses: actions/cache@v2
+      with:
+        path: |
+              ${{ inputs.SITE_FOLDER }}/__cache
+              ${{ inputs.SITE_FOLDER }}/__site
+        key: ${{ runner.os }}-${{ inputs.CACHE_KEY }}-${{ github.sha }}
+        restore-keys: ${{ runner.os }}-${{ inputs.CACHE_KEY }}-
+
+    # ============ #
+    # DEPENDENCIES #
+    # ============ #
+
+    # Python
+    - if: ${{ inputs.PYTHON_LIBS != '' }}
+      name: Installing Python 🐍...
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - if: ${{ inputs.PYTHON_LIBS != '' }}
+      name: Installing Python packages 🐍...
+      run: |
+           pip install ${{ inputs.PYTHON_LIBS }}
+           export PYTHON=$(which python)
+
+    # Apt-get update if necessary
+    - if: ${{ (inputs.PLOTS != '') || (inputs.LATEX) || (inputs.GNUPLOT) }}
+      name: Updating APT 👷‍♂️...
+      run: sudo apt-get update -qq
+
+    # QT dependencies for Plots with GR backend
+    - if: ${{ inputs.PLOTS != '' }}
+      name: Installing QT5 💻...
+      run: sudo apt-get install -y qt5-default
+
+    # LaTeX* deps for PGFPlotsX etc
+    - if: ${{ inputs.LATEX }}
+      name: Installing LaTeX 🌴...
+      run: sudo apt install -y pdf2svg texlive-latex-base texlive-binaries texlive-pictures texlive-latex-extra texlive-luatex
+
+    # Gnuplot for Gaston etc
+    - if: ${{ inputs.GNUPLOT }}
+      name: Install GnuPlot 💻
+      run: sudo apt-get install -y gnuplot
+
+    # ================ #
+    # BUILDING WEBSITE #
+    # ================ #
+
+    # Julia
+    - name: Installing Julia 💙...
+      uses: julia-actions/setup-julia@v1
+      with:
+        version: 1.7
+
+    # Building website
+    - name: Building website 🚧...
+      run: ${{ inputs.PLOTS }} julia -e '
+              using Pkg;
+              isempty("${{ inputs.PYTHON_LIBS }}") || (Pkg.add("PyCall"); Pkg.build("PyCall"););
+              Pkg.add(
+                url="https://github.com/tlienart/Xranklin.jl",
+                rev="${{ inputs.BRANCH }}"
+                );
+              using Xranklin;
+              build("${{ inputs.SITE_FOLDER }}";
+                    clear=${{ inputs.CLEAR_CACHE }},
+                    prefix=joinpath(
+                      "${{ inputs.BASE_URL_PREFIX }}",
+                      "${{ inputs.PREVIEW }}"
+                      )
+                    );'
+
+    # ========== #
+    # DEPLOYMENT #
+    # ========== #
+
+    # TTFX Experiment results
+    - name: Recover TTFX
+      uses: actions/checkout@v2
+      with:
+        ref: gh-ttfx
+        path: ttfx
+
+    - name: Move TTFX results
+      run: yes | cp -rf ttfx/ttfx/* ${{ inputs.SITE_FOLDER }}/__site/ttfx
+
+    # Deployment
+    - name: Avoid Jekyll build
+      run: touch ${{ inputs.SITE_FOLDER }}/__site/.nojekyll
+
+    - name: Deploy 🚀
+      uses: JamesIves/github-pages-deploy-action@releases/v4
+      with:
+        BRANCH: gh-pages
+        FOLDER: ${{ inputs.SITE_FOLDER }}/__site
+        TARGET-FOLDER: "${{ inputs.PREVIEW }}"
+
