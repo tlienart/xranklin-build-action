@@ -31,6 +31,9 @@ inputs:
   CACHE_KEY:
     required: false
     default: "franklin-cache"
+  TTFX:
+    required: false
+    default: false
 
 runs:
   using: "composite"
@@ -111,21 +114,28 @@ runs:
                     );'
       shell: bash
 
-    # ========== #
-    # DEPLOYMENT #
-    # ========== #
+    # ============================ #
+    # TTFX (only for Xranklin dev) #
+    # ============================ #
 
     # TTFX Experiment results
     - uses: actions/checkout@v2
       with:
         ref: gh-ttfx
         path: ttfx
+      if: ${{ inputs.TTFX }}
 
-    # or pipe ensures continue on fail
-    - run: rm -rf ${{ inputs.SITE_FOLDER }}/__site/ttfx || true
+    # OR pipe ensures continue on fail
+    - run: '
+           rm -rf ${{ inputs.SITE_FOLDER }}/__site/ttfx || true;
+           mv ttfx/ttfx ${{ inputs.SITE_FOLDER }}/__site/. || true;
+           '
       shell: bash
-    - run: mv ttfx/ttfx ${{ inputs.SITE_FOLDER }}/__site/. || true
-      shell: bash
+      if: ${{ inputs.TTFX }}
+
+    # ========== #
+    # DEPLOYMENT #
+    # ========== #
 
     # Deployment
     - run: touch ${{ inputs.SITE_FOLDER }}/__site/.nojekyll
@@ -136,3 +146,8 @@ runs:
         BRANCH: gh-pages
         FOLDER: ${{ inputs.SITE_FOLDER }}/__site
         TARGET-FOLDER: "${{ inputs.PREVIEW }}"
+
+    # ========== #
+    # LATEST TAG #
+    # ========== #
+    - uses: EndBug/latest-tag@latest
