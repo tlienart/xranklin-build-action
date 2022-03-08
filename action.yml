@@ -58,34 +58,34 @@ runs:
     - uses: actions/setup-python@v2
       with:
         python-version: 3.8
-      if: ${{ inputs.PYTHON_LIBS != '' }}
+      if: inputs.PYTHON_LIBS != ''
 
     - run: '
            pip install ${{ inputs.PYTHON_LIBS }};
            export PYTHON=$(which python);
            '
       shell: bash
-      if: ${{ inputs.PYTHON_LIBS != '' }}
+      if: inputs.PYTHON_LIBS != ''
 
     # Apt-get update if necessary
     - run: sudo apt-get update -qq
       shell: bash
-      if: ${{ (inputs.PLOTS != '') || (inputs.LATEX) || (inputs.GNUPLOT) }}
+      if: inputs.PLOTS != '' || inputs.LATEX || inputs.GNUPLOT
 
     # QT dependencies for Plots with GR backend
     - run: sudo apt-get install -y qt5-default
       shell: bash
-      if: ${{ inputs.PLOTS != '' }}
+      if: inputs.PLOTS != ''
 
     # LaTeX* deps for PGFPlotsX etc
     - run: sudo apt install -y pdf2svg texlive-latex-base texlive-binaries texlive-pictures texlive-latex-extra texlive-luatex
       shell: bash
-      if: ${{ inputs.LATEX }}
+      if: inputs.LATEX
 
     # Gnuplot for Gaston etc
     - run: sudo apt-get install -y gnuplot
       shell: bash
-      if: ${{ inputs.GNUPLOT }}
+      if: inputs.GNUPLOT
 
     # ================ #
     # BUILDING WEBSITE #
@@ -123,7 +123,7 @@ runs:
       with:
         ref: gh-ttfx
         path: ttfx
-      if: ${{ inputs.TTFX }}
+      if: inputs.TTFX
 
     # OR pipe ensures continue on fail
     - run: '
@@ -131,7 +131,7 @@ runs:
            mv ttfx/ttfx ${{ inputs.SITE_FOLDER }}/__site/. || true;
            '
       shell: bash
-      if: ${{ inputs.TTFX }}
+      if: inputs.TTFX
 
     # ========== #
     # DEPLOYMENT #
