@@ -1,36 +1,69 @@
 name: "Build website"
 
 inputs:
+  # SITE_FOLDER | if given and not empty, a folder path WITH
+  #               a trailing backslash
+  # Example:
+  #   SITE_FOLDER: "docs/"
   SITE_FOLDER:
     required: false
     default: ""
+  # BASE_URL_PREFIX | if given and not empty, the base URL prefix
+  #                   for a project website WITHOUT backslash
+  # Example
+  #   BASE_URL_PREFIX: "Xranklin.jl"
   BASE_URL_PREFIX:
     required: false
     default: ""
+  # PREVIEW | if given and not empty, adds to the BASE_URL_PREFIX
+  # Example
+  #   PREVIEW: "preview"
   PREVIEW:
     required: false
     default: ""
+  # BRANCH | if given and not empty, the Xranklin branch to use
+  # Example
+  #   BRANCH: "dev"
   BRANCH:
     required: false
     default: "main"
+  # PYTHON_LIBS | if given and not empty, the python3 libs to pip-install
+  # Example
+  #   PYTHON_LIBS: "matplotlib pandas"
   PYTHON_LIBS:
     required: false
     default: ""
+  # PLOTS | if given and not empty, it should be 'xfvb-run'
+  # Example
+  #   PLOTS: "xfvb-run"
   PLOTS:
     required: false
     default: ""
+  # LATEX | if given and not false, will install LaTeX dependencies
+  # Example
+  #   LATEX: true
   LATEX:
     required: false
     default: false
+  # GNUPLOT | if given and not false, will install GnuPlot + deps
+  # Example
+  #   GNUPLOT: false
   GNUPLOT:
     required: false
     default: false
+  # CLEAR_CACHE | if given and not false, force-clear the Xranklin cache
+  # Example
+  #   CLEAR_CACHE: true
   CLEAR_CACHE:
     required: false
     default: false
+  # CACHE_KEY | if given and not empty, the key to use for the cache
+  # Example
+  #   CACHE_KEY: true
   CACHE_KEY:
     required: false
     default: "franklin-cache"
+  # ONLY FOR DEVELOPMENT PURPOSES, SHOULD NOT BE USED BY USER
   TTFX:
     required: false
     default: false
@@ -127,8 +160,8 @@ runs:
 
     # OR pipe ensures continue on fail
     - run: '
-           rm -rf ${{ inputs.SITE_FOLDER }}/__site/ttfx || true;
-           mv ttfx/ttfx ${{ inputs.SITE_FOLDER }}/__site/. || true;
+           rm -rf ${{ inputs.SITE_FOLDER }}__site/ttfx || true;
+           mv ttfx/ttfx ${{ inputs.SITE_FOLDER }}__site/. || true;
            '
       shell: bash
       if: ${{ inputs.TTFX == 'true' }}
@@ -138,11 +171,11 @@ runs:
     # ========== #
 
     # Deployment
-    - run: touch ${{ inputs.SITE_FOLDER }}/__site/.nojekyll
+    - run: touch ${{ inputs.SITE_FOLDER }}__site/.nojekyll
       shell: bash
 
     - uses: JamesIves/github-pages-deploy-action@releases/v4
       with:
         BRANCH: gh-pages
-        FOLDER: ${{ inputs.SITE_FOLDER }}/__site
+        FOLDER: ${{ inputs.SITE_FOLDER }}__site
         TARGET-FOLDER: "${{ inputs.PREVIEW }}"
