@@ -1,13 +1,13 @@
-name: Add latest tag
+name: Keep the versions up-to-date
+
 on:
-  push:
-    branches:
-      - main
+  release:
+    types: [published, edited]
 
 jobs:
-  run:
-    name: Run local action
-    runs-on: ubuntu-latest
+  actions-tagger:
+    runs-on: windows-latest
     steps:
-      - name: Run latest-tag
-        uses: EndBug/latest-tag@latest
+      - uses: Actions-R-Us/actions-tagger@latest
+        with:
+          publish_latest_tag: true
