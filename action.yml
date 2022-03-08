@@ -63,7 +63,7 @@ inputs:
   CACHE_KEY:
     required: false
     default: "franklin-cache"
-  # ONLY FOR DEVELOPMENT PURPOSES, SHOULD NOT BE USED BY USER
+  # ONLY FOR XRANKLIN DEVELOPMENT PURPOSES, SHOULD NOT BE USED BY USER
   TTFX:
     required: false
     default: false
