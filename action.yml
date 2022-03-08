@@ -55,37 +55,37 @@ runs:
     # ============ #
 
     # Python
-    - if: ${{ inputs.PYTHON_LIBS != '' }}
-      uses: actions/setup-python@v2
+    - uses: actions/setup-python@v2
       with:
         python-version: 3.8
+      if: ${{ inputs.PYTHON_LIBS != '' }}
 
-    - if: ${{ inputs.PYTHON_LIBS != '' }}
-      run: |
-           pip install ${{ inputs.PYTHON_LIBS }}
-           export PYTHON=$(which python)
+    - run: '
+           pip install ${{ inputs.PYTHON_LIBS }};
+           export PYTHON=$(which python);
+           '
       shell: bash
+      if: ${{ inputs.PYTHON_LIBS != '' }}
 
     # Apt-get update if necessary
-    - if: ${{ (inputs.PLOTS != '') || (inputs.LATEX) || (inputs.GNUPLOT) }}
-      run: sudo apt-get update -qq
+    - run: sudo apt-get update -qq
       shell: bash
+      if: ${{ (inputs.PLOTS != '') || (inputs.LATEX) || (inputs.GNUPLOT) }}
 
     # QT dependencies for Plots with GR backend
-    - if: ${{ inputs.PLOTS != '' }}
-      name: Installing QT5 💻...
-      run: sudo apt-get install -y qt5-default
+    - run: sudo apt-get install -y qt5-default
       shell: bash
+      if: ${{ inputs.PLOTS != '' }}
 
     # LaTeX* deps for PGFPlotsX etc
-    - if: ${{ inputs.LATEX }}
-      run: sudo apt install -y pdf2svg texlive-latex-base texlive-binaries texlive-pictures texlive-latex-extra texlive-luatex
+    - run: sudo apt install -y pdf2svg texlive-latex-base texlive-binaries texlive-pictures texlive-latex-extra texlive-luatex
       shell: bash
+      if: ${{ inputs.LATEX }}
 
     # Gnuplot for Gaston etc
-    - if: ${{ inputs.GNUPLOT }}
-      run: sudo apt-get install -y gnuplot
+    - run: sudo apt-get install -y gnuplot
       shell: bash
+      if: ${{ inputs.GNUPLOT }}
 
     # ================ #
     # BUILDING WEBSITE #
