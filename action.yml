@@ -2,9 +2,11 @@ name: "Build website"
 
 inputs:
   SITE_FOLDER:
-    required: true
+    required: false
+    default: ""
   BASE_URL_PREFIX:
-    required: true
+    required: false
+    default: ""
   PREVIEW:
     required: false
     default: ""
@@ -24,9 +26,11 @@ inputs:
     required: false
     default: false
   CLEAR_CACHE:
-    required: true
+    required: false
+    default: false
   CACHE_KEY:
-    required: true
+    required: false
+    default: "franklin-cache"
 
 runs:
   using: "composite"
