@@ -51,6 +51,15 @@ inputs:
   GNUPLOT:
     required: false
     default: false
+  # JULIA_SETUP | if given and not empty, will pass the string as Julia
+  #               code to run prior to building the website.
+  #               For instance can be used to install specific packages.
+  #               Be mindful of ticks usage and add a trailing ';'
+  # Example
+  #   JULIA_SETUP: 'using Pkg; Pkg.add("NodeJS");'
+  JULIA_SETUP:
+    required: false
+    default: ""
   # CLEAR_CACHE | if given and not false, force-clear the Xranklin cache
   # Example
   #   CLEAR_CACHE: true
@@ -133,6 +142,7 @@ runs:
     - run: ${{ inputs.PLOTS }} julia -e '
               using Pkg;
               isempty("${{ inputs.PYTHON_LIBS }}") || (Pkg.add("PyCall"); Pkg.build("PyCall"););
+              ${{ inputs.JULIA_SETUP }};
               Pkg.add(
                 url="https://github.com/tlienart/Xranklin.jl",
                 rev="${{ inputs.BRANCH }}"
