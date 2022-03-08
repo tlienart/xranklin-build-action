@@ -146,8 +146,3 @@ runs:
         BRANCH: gh-pages
         FOLDER: ${{ inputs.SITE_FOLDER }}/__site
         TARGET-FOLDER: "${{ inputs.PREVIEW }}"
-
-    # ========== #
-    # LATEST TAG #
-    # ========== #
-    - uses: EndBug/latest-tag@latest
