@@ -1,10 +1,10 @@
 name: "Build website"
 
 inputs:
-  # SITE_FOLDER | if given and not empty, a folder path WITH
+  # SITE_FOLDER | if given and not empty, a folder path WITHOUT
   #               a trailing backslash
   # Example:
-  #   SITE_FOLDER: "docs/"
+  #   SITE_FOLDER: "docs"
   SITE_FOLDER:
     required: false
     default: ""
@@ -16,6 +16,7 @@ inputs:
     required: false
     default: ""
   # PREVIEW | if given and not empty, adds to the BASE_URL_PREFIX
+  #           it should NOT have a trailing backslash
   # Example
   #   PREVIEW: "preview"
   PREVIEW:
@@ -170,8 +171,8 @@ runs:
 
     # OR pipe ensures continue on fail
     - run: '
-           rm -rf ${{ inputs.SITE_FOLDER }}__site/ttfx || true;
-           mv ttfx/ttfx ${{ inputs.SITE_FOLDER }}__site/. || true;
+           rm -rf ${{ inputs.SITE_FOLDER }}/__site/ttfx || true;
+           mv ttfx/ttfx ${{ inputs.SITE_FOLDER }}/__site/. || true;
            '
       shell: bash
       if: ${{ inputs.TTFX == 'true' }}
@@ -181,11 +182,11 @@ runs:
     # ========== #
 
     # Deployment
-    - run: touch ${{ inputs.SITE_FOLDER }}__site/.nojekyll
+    - run: touch ${{ inputs.SITE_FOLDER }}/__site/.nojekyll
       shell: bash
 
     - uses: JamesIves/github-pages-deploy-action@releases/v4
       with:
         BRANCH: gh-pages
-        FOLDER: ${{ inputs.SITE_FOLDER }}__site
+        FOLDER: ${{ inputs.SITE_FOLDER }}/__site
         TARGET-FOLDER: "${{ inputs.PREVIEW }}"
