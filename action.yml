@@ -1,10 +1,10 @@
 name: "Build website"
 
 inputs:
-  # SITE_FOLDER | if given and not empty, a folder path WITHOUT
+  # SITE_FOLDER | if given and not empty, a folder path WITH
   #               a trailing backslash
   # Example:
-  #   SITE_FOLDER: "docs"
+  #   SITE_FOLDER: "docs/"
   SITE_FOLDER:
     required: false
     default: ""
@@ -190,11 +190,11 @@ runs:
     # ========== #
 
     # Deployment
-    - run: touch ${{ inputs.SITE_FOLDER }}/__site/.nojekyll
+    - run: touch ${{ inputs.SITE_FOLDER }}__site/.nojekyll
       shell: bash
 
     - uses: JamesIves/github-pages-deploy-action@releases/v4
       with:
         BRANCH: gh-pages
-        FOLDER: ${{ inputs.SITE_FOLDER }}/__site
+        FOLDER: ${{ inputs.SITE_FOLDER }}__site
         TARGET-FOLDER: "${{ inputs.PREVIEW }}"
