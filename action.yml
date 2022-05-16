@@ -55,7 +55,8 @@ inputs:
   # JULIA_PRE | if given and not empty, will pass the string as Julia
   #             code to run prior to building the website.
   #             For instance can be used to install specific packages.
-  #             Be mindful of ticks usage and add a trailing ';'
+  #             Be mindful of ticks usage and add a trailing ';' to
+  #             **every** line. Do not add comments.
   # Example
   #   JULIA_PRE: 'using Pkg; Pkg.add("NodeJS");'
   JULIA_PRE:
