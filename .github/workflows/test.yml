@@ -10,7 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
+      - uses: actions/checkout@v3
       - uses: tlienart/xranklin-build-action@main
-      - with:
+        with:
           SITE_FOLDER: "test/"
           DEPLOY: false
