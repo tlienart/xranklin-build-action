@@ -1,0 +1,16 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - uses: tlienart/xranklin-build-action@main
+      - with:
+          SITE_FOLDER: "test/"
+          DEPLOY: false

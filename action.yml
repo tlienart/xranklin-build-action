@@ -2,21 +2,38 @@ name: "Build website"
 
 inputs:
   # SITE_FOLDER | if given and not empty, a folder path WITH
-  #               a trailing backslash
+  #               a trailing backslash. This is the location
+  #               of the source folder (e.g.: where the
+  #               config.md is expected to be found)
+  #               In general, this will be the repo itself and
+  #               so doesn't have to be provided. But, as in the
+  #               example below, it might be in a docs/ folder of
+  #               a package
   # Example:
   #   SITE_FOLDER: "docs/"
   SITE_FOLDER:
     required: false
     default: ""
+  # DEPLOY | if set to false, the script will only attempt to build
+  #          the website but not place the generated files anywhere
+  #          this can be used for testing
+  DEPLOY:
+    required: false
+    default: true
   # BASE_URL_PREFIX | if given and not empty, the base URL prefix
-  #                   for a project website WITHOUT backslash
+  #                   for a project website WITHOUT backslash.
+  #                   This indicates what the base path is, if
+  #                   not given it's expected to be '/', if set
+  #                   to 'foo', it's '/foo/'
   # Example
   #   BASE_URL_PREFIX: "Xranklin.jl"
   BASE_URL_PREFIX:
     required: false
     default: ""
   # PREVIEW | if given and not empty, adds to the BASE_URL_PREFIX
-  #           it should NOT have a trailing backslash
+  #           it should NOT have a trailing backslash. This allows
+  #           to have preview deployments with a separate path for
+  #           testing
   # Example
   #   PREVIEW: "preview"
   PREVIEW:
@@ -107,7 +124,7 @@ runs:
     # Python
     - uses: actions/setup-python@v2
       with:
-        python-version: 3.8
+        python-version: 3.10
       if: inputs.PYTHON_LIBS != ''
 
     - run: '
@@ -144,7 +161,7 @@ runs:
     # Julia
     - uses: julia-actions/setup-julia@v1
       with:
-        version: 1.7
+        version: 1.8
 
     # Building website
     - run: ${{ inputs.PLOTS }} julia -e '
@@ -175,7 +192,7 @@ runs:
       with:
         ref: gh-ttfx
         path: ttfx
-      if: ${{ inputs.TTFX == 'true' }}
+      if: ${{ (inputs.TTFX == 'true') && (inputs.DEPLOY == 'true') }}
 
     # OR pipe ensures continue on fail
     - run: '
@@ -183,7 +200,7 @@ runs:
            mv ttfx/ttfx ${{ inputs.SITE_FOLDER }}/__site/. || true;
            '
       shell: bash
-      if: ${{ inputs.TTFX == 'true' }}
+      if: ${{ inputs.TTFX == 'true' && (inputs.DEPLOY == 'true') }}
 
     # ========== #
     # DEPLOYMENT #
@@ -192,9 +209,11 @@ runs:
     # Deployment
     - run: touch ${{ inputs.SITE_FOLDER }}__site/.nojekyll
       shell: bash
+      if: ${{ inputs.DEPLOY == 'true' }}
 
     - uses: JamesIves/github-pages-deploy-action@releases/v4
       with:
         BRANCH: gh-pages
         FOLDER: ${{ inputs.SITE_FOLDER }}__site
         TARGET-FOLDER: "${{ inputs.PREVIEW }}"
+      if: ${{ inputs.DEPLOY == 'true' }}
