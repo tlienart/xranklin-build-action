@@ -140,7 +140,8 @@ runs:
       if: ${{ inputs.PLOTS != '' || inputs.LATEX == 'true' || inputs.GNUPLOT == 'true' }}
 
     # QT dependencies for Plots with GR backend
-    - uses: jurplel/install-qt-actions@v3
+    - run: sudo apt-get install -y qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools
+      shell: bash
       if: ${{ inputs.PLOTS != '' }}
 
     # LaTeX* deps for PGFPlotsX etc
