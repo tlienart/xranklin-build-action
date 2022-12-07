@@ -140,7 +140,7 @@ runs:
       if: ${{ inputs.PLOTS != '' || inputs.LATEX == 'true' || inputs.GNUPLOT == 'true' }}
 
     # QT dependencies for Plots with GR backend
-    - run: sudo apt-get install -y qt5-default
+    - run: sudo apt-get install -y qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools
       shell: bash
       if: ${{ inputs.PLOTS != '' }}
 
