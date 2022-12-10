@@ -164,7 +164,7 @@ runs:
         version: 1.8
 
     # Building website
-    - run: ${{ inputs.PLOTS }} julia -e '
+    - run: ${{ inputs.PLOTS }} julia --color=yes -e '
               using Pkg;
               isempty("${{ inputs.PYTHON_LIBS }}") || (Pkg.add("PyCall"); Pkg.build("PyCall"););
               ${{ inputs.JULIA_PRE }};
