@@ -3,6 +3,7 @@ name: Test
 on:
   push:
     branches:
+      - dev
       - main
 
 jobs:

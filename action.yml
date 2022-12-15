@@ -45,6 +45,15 @@ inputs:
   BRANCH:
     required: false
     default: "main"
+  # LUNR | if given and not false, will install the lunr dependencies
+  #        and attempt to build the lunr index
+  LUNR:
+    required: false
+    default: false
+  # LUNR_BUILDER | if given and not empty, the path to the index builder script
+  LUNR_BUILDER:
+    required: false
+    default: "_libs/lunr/build_index.js"
   # PYTHON_LIBS | if given and not empty, the python3 libs to pip-install
   # Example
   #   PYTHON_LIBS: "matplotlib pandas"
@@ -165,22 +174,17 @@ runs:
 
     # Building website
     - run: ${{ inputs.PLOTS }} julia --color=yes -e '
-              using Pkg;
-              isempty("${{ inputs.PYTHON_LIBS }}") || (Pkg.add("PyCall"); Pkg.build("PyCall"););
-              ${{ inputs.JULIA_PRE }};
-              Pkg.add(
-                url="https://github.com/tlienart/Xranklin.jl",
-                rev="${{ inputs.BRANCH }}"
-                );
-              using Xranklin;
-              build("${{ inputs.SITE_FOLDER }}";
-                  clear=${{ inputs.CLEAR_CACHE }},
-                  prefix=joinpath(
-                      "${{ inputs.BASE_URL_PREFIX }}",
-                      "${{ inputs.PREVIEW }}"
-                  )
-              );
-              ${{ inputs.JULIA_POST }};'
+            ${{ inputs.JULIA_PRE }};
+            python_libs  = "${{ inputs.PYTHON_LIBS }}";
+            branch       = "${{ inputs.BRANCH }}";
+            site_folder  = "${{ inputs.SITE_FOLDER }}";
+            lunr         = "${{ inputs.LUNR }} ";
+            lunr_builder = "${{ inputs.LUNR_BUILDER }}";
+            clear_cache  = "${{ inputs.CLEAR_CACHE }}";
+            base_prefix  = "${{ inputs.BASE_URL_PREFIX }}";
+            preview      = "${{ inputs.PREVIEW }}";
+            include("step_build.jl");
+            ${{ inputs.JULIA_POST }};'
       shell: bash
 
     # ============================ #
