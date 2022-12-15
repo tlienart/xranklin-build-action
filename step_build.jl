@@ -23,3 +23,7 @@ println()
 if lunr && isfile(lunr_builder)
     include("step_lunr.jl")
 end
+
+println()
+println("🏁 build process done 🏁")
+println()

@@ -16,3 +16,4 @@ jobs:
         with:
           SITE_FOLDER: "test/"
           DEPLOY: false
+          LUNR: true
