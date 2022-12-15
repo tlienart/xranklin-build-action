@@ -178,9 +178,9 @@ runs:
             python_libs  = "${{ inputs.PYTHON_LIBS }}";
             branch       = "${{ inputs.BRANCH }}";
             site_folder  = "${{ inputs.SITE_FOLDER }}";
-            lunr         = "${{ inputs.LUNR }} ";
+            lunr         =  ${{ inputs.LUNR }};
             lunr_builder = "${{ inputs.LUNR_BUILDER }}";
-            clear_cache  = "${{ inputs.CLEAR_CACHE }}";
+            clear_cache  =  ${{ inputs.CLEAR_CACHE }};
             base_prefix  = "${{ inputs.BASE_URL_PREFIX }}";
             preview      = "${{ inputs.PREVIEW }}";
             include("step_build.jl");
