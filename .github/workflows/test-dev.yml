@@ -3,7 +3,7 @@ name: Test
 on:
   push:
     branches:
-      - main
+      - dev
 
 jobs:
   test:
@@ -11,7 +11,7 @@ jobs:
     permissions: write-all
     steps:
       - uses: actions/checkout@v3
-      - uses: tlienart/xranklin-build-action@main
+      - uses: tlienart/xranklin-build-action@dev
         with:
           SITE_FOLDER: "test/"
           DEPLOY: false
