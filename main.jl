@@ -21,7 +21,7 @@ end
 @g "julia_post"
 
 macro i(s)
-    include_string(Main, s)
+    esc(:(include_string(Main, $s)))
 end
 
 # -----------------------------------------------------------------------------
