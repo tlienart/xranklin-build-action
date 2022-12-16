@@ -74,7 +74,7 @@ if lunr
         bk = pwd()
         isempty(site_folder) || cd(site_folder)
         try
-            run(`$(node()) $path_lunr_builder`)
+            run(`$(node()) $lunr_builder`)
             println()
             @info(" ✔ Lunr index built") 
             println()
