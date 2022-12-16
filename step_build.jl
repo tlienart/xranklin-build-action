@@ -32,18 +32,21 @@ println()
 if lunr
     path_lunr_builder = joinpath(site_folder, lunr_builder)
     if isfile(path_lunr_builder)
-        print("\n👀 building the Lunr index...")
+        println()
+        @info "👀 building the Lunr index..."
+        println()
         Pkg.add("NodeJS_16_jll")
         using NodeJS_16_jll
         run(`$(npm) install cheerio`)
         run(`$(npm) install lunr`)
-
         run(`$(node()) $path_lunr_builder`)
-        println(" (✔ done)") 
+        println()
+        @info(" ✔ Lunr index built") 
+        println()
     end
 end
 
 # -----------------------------------------------------------------------------
 println()
-println("🏁 build process done 🏁")
+println("🏁🏁🏁 Franklin build process done 🏁🏁🏁")
 println()
