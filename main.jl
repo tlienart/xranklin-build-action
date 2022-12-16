@@ -63,7 +63,7 @@ println()
 # LUNR INDEX
 
 if lunr
-    if joinpath(site_folder, lunr_builder)
+    if isfile(joinpath(site_folder, lunr_builder))
         println()
         @info "👀 building the Lunr index..."
         println()
@@ -85,6 +85,10 @@ if lunr
         finally
             cd(bk)
         end
+    else
+        println()
+        @info(" 🔴 couldn't find the index builder script")
+        println()
     end
 end
 
