@@ -114,9 +114,6 @@ inputs:
     required: false
     default: false
 
-context:
-  GITHUB_ACTION_PATH: $GITHUB_ACTION_PATH  
-
 runs:
   using: "composite"
   steps:
@@ -189,7 +186,7 @@ runs:
             clear_cache  =  ${{ inputs.CLEAR_CACHE }};
             base_prefix  = "${{ inputs.BASE_URL_PREFIX }}";
             preview      = "${{ inputs.PREVIEW }}";
-            gha_path     = "${{ context.GITHUB_ACTION_PATH }}";
+            gha_path     = "${{ GITHUB_ACTION_PATH }}";
             include(joinpath(gha_path, "step_build.jl"));
             ${{ inputs.JULIA_POST }};'
       shell: bash
