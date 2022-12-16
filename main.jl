@@ -63,8 +63,7 @@ println()
 # LUNR INDEX
 
 if lunr
-    path_lunr_builder = joinpath(site_folder, lunr_builder)
-    if isfile(path_lunr_builder)
+    if joinpath(site_folder, lunr_builder)
         println()
         @info "👀 building the Lunr index..."
         println()
@@ -72,10 +71,20 @@ if lunr
         using NodeJS_16_jll
         run(`$(npm) install cheerio`)
         run(`$(npm) install lunr`)
-        run(`$(node()) $path_lunr_builder`)
-        println()
-        @info(" ✔ Lunr index built") 
-        println()
+        bk = pwd()
+        isempty(site_folder) || cd(site_folder)
+        try
+            run(`$(node()) $path_lunr_builder`)
+            println()
+            @info(" ✔ Lunr index built") 
+            println()
+        catch
+            println()
+            @info(" 🔴 Lunr index build process failed")
+            println()
+        finally
+            cd(bk)
+        end
     end
 end
 
