@@ -1,5 +1,10 @@
 import Pkg
 
+"""
+    @g "foo" Int
+
+Allocates a variable foo to ENV["FOO"] and type cast it to Int.
+"""
 macro g(s, T=String)
     esc(:(
         $(Symbol(s)) = begin
@@ -20,6 +25,8 @@ end
 @g "preview"
 @g "julia_post"
 
+"""
+"""
 macro i(s)
     esc(:(include_string(Main, $s)))
 end
@@ -48,10 +55,7 @@ using Xranklin
 build(
     site_folder;
     clear=clear_cache,
-    prefix=joinpath(
-        base_prefix,
-        preview
-    )
+    prefix=joinpath(base_url_prefix, preview)
 )
 println()
 
