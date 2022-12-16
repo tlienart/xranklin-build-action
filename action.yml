@@ -184,8 +184,7 @@ runs:
             clear_cache  =  ${{ inputs.CLEAR_CACHE }};
             base_prefix  = "${{ inputs.BASE_URL_PREFIX }}";
             preview      = "${{ inputs.PREVIEW }}";
-            gha_path     = "${{ GITHUB_ACTION_PATH }}";
-            include("$gha_path/step_build.jl");
+            include("${{ env.GITHUB_ACTION_PATH }}/step_build.jl");
             ${{ inputs.JULIA_POST }};'
       shell: bash
 
