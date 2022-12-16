@@ -176,20 +176,19 @@ runs:
         version: 1.8
 
     # Building website
-    - run: ${{ inputs.PLOTS }} julia --color=yes -e '
-            ${{ inputs.JULIA_PRE }};
-            python_libs  = "${{ inputs.PYTHON_LIBS }}";
-            branch       = "${{ inputs.BRANCH }}";
-            site_folder  = "${{ inputs.SITE_FOLDER }}";
-            lunr         =  ${{ inputs.LUNR }};
-            lunr_builder = "${{ inputs.LUNR_BUILDER }}";
-            clear_cache  =  ${{ inputs.CLEAR_CACHE }};
-            base_prefix  = "${{ inputs.BASE_URL_PREFIX }}";
-            preview      = "${{ inputs.PREVIEW }}";
-            gha_path     = "${{ GITHUB_ACTION_PATH }}";
-            include(joinpath(gha_path, "step_build.jl"));
-            ${{ inputs.JULIA_POST }};'
+    - run: ${{ inputs.PLOTS }} julia --color=yes "$GITHUB_ACTION_PATH"/main.jl
       shell: bash
+      env:
+        JULIA_PRE:       ${{ inputs.JULIA_PRE }}
+        PYTHON_LIBS:     ${{ inputs.PYTHON_LIBS }}
+        BRANCH:          ${{ inputs.BRANCH }}
+        SITE_FOLDER:     ${{ inputs.SITE_FOLDER }}
+        LUNR:            ${{ inputs.LUNR }}
+        LUNR_BUILDER:    ${{ inputs.LUNR_BUILDER }}
+        CLEAR_CACHE:     ${{ inputs.CLEAR_CACHE }}
+        BASE_URL_PREFIX: ${{ inputs.BASE_URL_PREFIX }}
+        PREVIEW:         ${{ inputs.PREVIEW }}
+        JULIA_POST:      ${{ inputs.JULIA_POST }}
 
     # ============================ #
     # TTFX (only for Xranklin dev) #

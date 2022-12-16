@@ -1,5 +1,34 @@
 import Pkg
 
+macro g(s, T=String)
+    esc(:(
+        $(Symbol(s)) = begin
+            e = get(ENV, uppercase($s), ""); 
+            ($T === String) ? e : parse($T, e)
+        end
+    ))
+end
+
+@g "julia_pre"
+@g "python_libs"
+@g "branch"
+@g "site_folder"
+@g "lunr" Bool
+@g "lunr_builder"
+@g "clear_cache" Bool
+@g "base_url_prefix"
+@g "preview"
+@g "julia_post"
+
+macro i(s)
+    include_string(Main, s)
+end
+
+# -----------------------------------------------------------------------------
+# PRELIM SCRIPT
+
+@i julia_pre
+
 # -----------------------------------------------------------------------------
 # PYTHON DEPS
 
@@ -47,6 +76,8 @@ if lunr
 end
 
 # -----------------------------------------------------------------------------
-println()
-println("🏁🏁🏁 Franklin build process done 🏁🏁🏁")
-println()
+# FINAL SCRIPT
+@i julia_post
+
+# -----------------------------------------------------------------------------
+println("\n🏁🏁🏁 Franklin build process done 🏁🏁🏁\n")
