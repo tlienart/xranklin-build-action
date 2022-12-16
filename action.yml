@@ -1,4 +1,5 @@
 name: "Build website"
+version: 3.10
 
 inputs:
   # SITE_FOLDER | if given and not empty, a folder path WITH
@@ -183,7 +184,7 @@ runs:
             clear_cache  =  ${{ inputs.CLEAR_CACHE }};
             base_prefix  = "${{ inputs.BASE_URL_PREFIX }}";
             preview      = "${{ inputs.PREVIEW }}";
-            include("step_build.jl");
+            include("$GITHUB_ACTION_PATH/step_build.jl");
             ${{ inputs.JULIA_POST }};'
       shell: bash
 
