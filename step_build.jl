@@ -34,7 +34,7 @@ if lunr
     if isfile(path_lunr_builder)
         print("\n👀 building the Lunr index...")
         Pkg.add("NodeJS_16_jll")
-
+        using NodeJS_16_jll
         run(`$(npm) install cheerio`)
         run(`$(npm) install lunr`)
 
