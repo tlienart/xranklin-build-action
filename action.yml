@@ -28,6 +28,9 @@ inputs:
     default: "_libs/lunr/build_index.js"
 
   # FRANKLIN OPTIONS
+  JULIA_VERSION:
+    required: false
+    default: 1
   FRANKLIN_REPO:
     required: false
     default: "https://github.com/tlienart/Xranklin.jl"
@@ -51,30 +54,21 @@ inputs:
   DISPLAY_SERVER:
     required: false
     default: ""
-  # LATEX | if given and not false, will install LaTeX dependencies
-  # Example
-  #   LATEX: true
   LATEX:
     required: false
     default: false
-  # GNUPLOT | if given and not false, will install GnuPlot + deps
-  # Example
-  #   GNUPLOT: false
   GNUPLOT:
     required: false
     default: false
-  # CLEAR_CACHE | if given and not false, force-clear the Xranklin cache
-  # Example
-  #   CLEAR_CACHE: true
+
+  # ADVANCED BUILD OPTIONS
   CLEAR_CACHE:
     required: false
     default: false
-  # CACHE_KEY | if given and not empty, the key to use for the cache
-  # Example
-  #   CACHE_KEY: true
   CACHE_KEY:
     required: false
     default: "franklin-cache"
+
   # ONLY FOR XRANKLIN DEVELOPMENT PURPOSES, SHOULD NOT BE USED BY USER
   TTFX:
     required: false
@@ -97,7 +91,6 @@ runs:
     # ============ #
     # DEPENDENCIES #
     # ============ #
-    # Python
     - uses: actions/setup-python@v4
       with:
         python-version: '3.10'
@@ -136,7 +129,7 @@ runs:
     # Julia
     - uses: julia-actions/setup-julia@v1
       with:
-        version: 1.8
+        version: ${{ inputs.JULIA_VERSION }}
 
     # Building website
     - run: ${{ inputs.DISPLAY_SERVER }} julia --color=yes "$GITHUB_ACTION_PATH"/main.jl
@@ -158,7 +151,6 @@ runs:
     # ============================ #
     # TTFX (only for Xranklin dev) #
     # ============================ #
-    # TTFX Experiment results
     - uses: actions/checkout@v3
       with:
         ref: gh-ttfx
@@ -176,7 +168,6 @@ runs:
     # ========== #
     # DEPLOYMENT #
     # ========== #
-    # Deployment
     - run: touch ${{ inputs.SITE_FOLDER }}__site/.nojekyll
       shell: bash
       if: ${{ inputs.DEPLOY == 'true' }}

@@ -85,6 +85,7 @@ For now these options should be left untouched.
 
 | **Key** |  **Default** | **Purpose** |
 | ------- | ------------ | ----------- |
+| `JULIA_VERSION` | `'1'` | Julia version to use (see [julia setup docs](https://github.com/julia-actions/setup-julia)) |
 | `FRANKLIN_REPO` | `"https://github.com/tlienart/Xranklin.jl"` | Where the Franklin code is (this will be removed when there's only one code base of course) |
 | `FRANKLIN_VERSION` | `""` | The version to use if not the latest. |
 | `FRANKLIN_BRANCH` | `""` | The branch to use if not `"main"`. This takes precedence over `FRANKLIN_VERSION` and will use the latest commit of the branch. |
