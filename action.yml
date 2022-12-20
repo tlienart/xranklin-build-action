@@ -4,69 +4,51 @@ env:
   VERSION: 3.10
 
 inputs:
-  # SITE_FOLDER | if given and not empty, a folder path WITH
-  #               a trailing backslash. This is the location
-  #               of the source folder (e.g.: where the
-  #               config.md is expected to be found)
-  #               In general, this will be the repo itself and
-  #               so doesn't have to be provided. But, as in the
-  #               example below, it might be in a docs/ folder of
-  #               a package
-  # Example:
-  #   SITE_FOLDER: "docs/"
+  # DEPLOYMENT OPTIONS
   SITE_FOLDER:
     required: false
     default: ""
-  # DEPLOY | if set to false, the script will only attempt to build
-  #          the website but not place the generated files anywhere
-  #          this can be used for testing
-  DEPLOY:
-    required: false
-    default: true
-  # BASE_URL_PREFIX | if given and not empty, the base URL prefix
-  #                   for a project website WITHOUT backslash.
-  #                   This indicates what the base path is, if
-  #                   not given it's expected to be '/', if set
-  #                   to 'foo', it's '/foo/'
-  # Example
-  #   BASE_URL_PREFIX: "Xranklin.jl"
   BASE_URL_PREFIX:
     required: false
     default: ""
-  # PREVIEW | if given and not empty, adds to the BASE_URL_PREFIX
-  #           it should NOT have a trailing backslash. This allows
-  #           to have preview deployments with a separate path for
-  #           testing
-  # Example
-  #   PREVIEW: "preview"
   PREVIEW:
     required: false
     default: ""
-  # BRANCH | if given and not empty, the Xranklin branch to use
-  # Example
-  #   BRANCH: "dev"
-  BRANCH:
+  DEPLOY:
     required: false
-    default: "main"
-  # LUNR | if given and not false, will install the lunr dependencies
-  #        and attempt to build the lunr index
+    default: true
+  DEPLOY_BRANCH:
+    required: false
+    default: "gh-pages"
   LUNR:
     required: false
     default: false
-  # LUNR_BUILDER | if given and not empty, the path to the index builder script
   LUNR_BUILDER:
     required: false
     default: "_libs/lunr/build_index.js"
-  # PYTHON_LIBS | if given and not empty, the python3 libs to pip-install
-  # Example
-  #   PYTHON_LIBS: "matplotlib pandas"
+
+  # FRANKLIN OPTIONS
+  FRANKLIN_REPO:
+    required: false
+    default: "https://github.com/tlienart/Xranklin.jl"
+  FRANKLIN_VERSION:
+    required: false
+    default: ""
+  FRANKLIN_BRANCH:
+    required: false
+    default: "main"
+
+  # BUILD OPTIONS
+  JULIA_PRE:
+    required: false
+    default: ""
+  JULIA_POST:
+    required: false
+    default: ""
   PYTHON_LIBS:
     required: false
     default: ""
-  # PLOTS | if given and not empty, it should be 'xfvb-run'
-  # Example
-  #   PLOTS: "xfvb-run"
-  PLOTS:
+  DISPLAY_SERVER:
     required: false
     default: ""
   # LATEX | if given and not false, will install LaTeX dependencies
@@ -81,22 +63,6 @@ inputs:
   GNUPLOT:
     required: false
     default: false
-  # JULIA_PRE | if given and not empty, will pass the string as Julia
-  #             code to run prior to building the website.
-  #             For instance can be used to install specific packages.
-  #             Be mindful of ticks usage and add a trailing ';' to
-  #             **every** line. Do not add comments.
-  # Example
-  #   JULIA_PRE: 'using Pkg; Pkg.add("NodeJS");'
-  JULIA_PRE:
-    required: false
-    default: ""
-  # JULIA_POST | same as JULIA_PRE but applied after the build.
-  # Example
-  #   JULIA_POST: 'success(pipeline(`...`))'
-  JULIA_POST:
-    required: false
-    default: ""
   # CLEAR_CACHE | if given and not false, force-clear the Xranklin cache
   # Example
   #   CLEAR_CACHE: true
@@ -120,7 +86,6 @@ runs:
     # =========== #
     # CACHE SETUP #
     # =========== #
-
     - uses: actions/cache@v3
       with:
         path: |
@@ -132,7 +97,6 @@ runs:
     # ============ #
     # DEPENDENCIES #
     # ============ #
-
     # Python
     - uses: actions/setup-python@v4
       with:
@@ -169,31 +133,31 @@ runs:
     # ================ #
     # BUILDING WEBSITE #
     # ================ #
-
     # Julia
     - uses: julia-actions/setup-julia@v1
       with:
         version: 1.8
 
     # Building website
-    - run: ${{ inputs.PLOTS }} julia --color=yes "$GITHUB_ACTION_PATH"/main.jl
+    - run: ${{ inputs.DISPLAY_SERVER }} julia --color=yes "$GITHUB_ACTION_PATH"/main.jl
       shell: bash
       env:
-        JULIA_PRE:       ${{ inputs.JULIA_PRE }}
-        PYTHON_LIBS:     ${{ inputs.PYTHON_LIBS }}
-        BRANCH:          ${{ inputs.BRANCH }}
-        SITE_FOLDER:     ${{ inputs.SITE_FOLDER }}
-        LUNR:            ${{ inputs.LUNR }}
-        LUNR_BUILDER:    ${{ inputs.LUNR_BUILDER }}
-        CLEAR_CACHE:     ${{ inputs.CLEAR_CACHE }}
-        BASE_URL_PREFIX: ${{ inputs.BASE_URL_PREFIX }}
-        PREVIEW:         ${{ inputs.PREVIEW }}
-        JULIA_POST:      ${{ inputs.JULIA_POST }}
+        JULIA_PRE:        ${{ inputs.JULIA_PRE }}
+        PYTHON_LIBS:      ${{ inputs.PYTHON_LIBS }}
+        SITE_FOLDER:      ${{ inputs.SITE_FOLDER }}
+        LUNR:             ${{ inputs.LUNR }}
+        LUNR_BUILDER:     ${{ inputs.LUNR_BUILDER }}
+        CLEAR_CACHE:      ${{ inputs.CLEAR_CACHE }}
+        BASE_URL_PREFIX:  ${{ inputs.BASE_URL_PREFIX }}
+        PREVIEW:          ${{ inputs.PREVIEW }}
+        JULIA_POST:       ${{ inputs.JULIA_POST }}
+        FRANKLIN_REPO:    ${{ inputs.FRANKLIN_REPO }}
+        FRANKLIN_VERSION: ${{ inputs.FRANKLIN_VERSION }}
+        FRANKLIN_BRANCH:  ${{ inputs.FRANKLIN_BRANCH  }}        
 
     # ============================ #
     # TTFX (only for Xranklin dev) #
     # ============================ #
-
     # TTFX Experiment results
     - uses: actions/checkout@v3
       with:
@@ -212,7 +176,6 @@ runs:
     # ========== #
     # DEPLOYMENT #
     # ========== #
-
     # Deployment
     - run: touch ${{ inputs.SITE_FOLDER }}__site/.nojekyll
       shell: bash
@@ -220,7 +183,7 @@ runs:
 
     - uses: JamesIves/github-pages-deploy-action@releases/v4
       with:
-        BRANCH: gh-pages
+        BRANCH: ${{ inputs.DEPLOY_BRANCH }}
         FOLDER: ${{ inputs.SITE_FOLDER }}__site
         TARGET-FOLDER: "${{ inputs.PREVIEW }}"
       if: ${{ inputs.DEPLOY == 'true' }}

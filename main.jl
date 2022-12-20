@@ -1,9 +1,10 @@
 import Pkg
 
 """
-    @g "foo" Int
+    @g "foo" [T]
 
-Allocates a variable foo to ENV["FOO"] and type cast it to Int.
+Allocates a variable foo to ENV["FOO"] and type cast it to T if
+given (otherwise a String is returned).
 """
 macro g(s, T=String)
     esc(:(
@@ -16,7 +17,6 @@ end
 
 @g "julia_pre"
 @g "python_libs"
-@g "branch"
 @g "site_folder"
 @g "lunr" Bool
 @g "lunr_builder"
@@ -24,8 +24,15 @@ end
 @g "base_url_prefix"
 @g "preview"
 @g "julia_post"
+@g "franklin_repo"
+@g "franklin_version"
+@g "franklin_branch"
+
 
 """
+    @i code
+
+Evaluate Julia code in the current environment.
 """
 macro i(s)
     esc(:(include_string(Main, $s)))
@@ -33,12 +40,13 @@ end
 
 # -----------------------------------------------------------------------------
 # PRELIM SCRIPT
-
+println("-------------------------------------------")
+println("🏁🏁🏁 Starting Franklin build process 🏁🏁🏁")
+println("-------------------------------------------")
 @i julia_pre
 
 # -----------------------------------------------------------------------------
 # PYTHON DEPS
-
 if !isempty(python_libs)
     Pkg.add("PyCall")
     Pkg.build("PyCall")
@@ -46,16 +54,23 @@ end
 
 # -----------------------------------------------------------------------------
 # XRANKLIN BUILD
-
-Pkg.add(
-    url="https://github.com/tlienart/Xranklin.jl",
-    rev=branch
-)
+if !isempty(franklin_version) && franklin_branch == "main"
+    Pkg.add(
+        url=franklin_repo,
+        version=franklin_version
+    )
+else
+    Pkg.add(
+        url=franklin_repo,
+        rev=franklin_branch
+    )
+end
 using Xranklin
 build(
     site_folder;
     clear=clear_cache,
-    prefix=joinpath(base_url_prefix, preview)
+    prefix=joinpath(base_url_prefix, preview),
+    cleanup=false
 )
 println()
 
@@ -97,4 +112,6 @@ end
 @i julia_post
 
 # -----------------------------------------------------------------------------
-println("\n🏁🏁🏁 Franklin build process done 🏁🏁🏁\n")
+println("---------------------------------------")
+println("🏁🏁🏁 Franklin build process done 🏁🏁🏁")
+println("---------------------------------------")
