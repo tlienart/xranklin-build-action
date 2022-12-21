@@ -111,5 +111,5 @@ Using the GitHub cache may speed things up when you make a sequence of changes t
 
 | **Key** |  **Default** | **Purpose** |
 | ------- | ------------ | ----------- |
-| `CLEAR_CACHE` | `false` | If `true`, force-clear the cache that may be available on GitHub to make sure the website is built from a clean slate. |
+| `CLEAR_CACHE` | `true` | If `true`, force-clear the cache that may be available on GitHub to make sure the website is built from a clean slate. Setting this to `false` is still experimental and should mostly be used when you're only making small changes to your site. |
 | `CACHE_KEY` | `"franklin-cache"` | Key to use for the GitHub cache. |

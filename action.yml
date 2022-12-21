@@ -64,7 +64,7 @@ inputs:
   # ADVANCED BUILD OPTIONS
   CLEAR_CACHE:
     required: false
-    default: false
+    default: true
   CACHE_KEY:
     required: false
     default: "franklin-cache"
