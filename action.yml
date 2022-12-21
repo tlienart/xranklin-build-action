@@ -78,7 +78,7 @@ runs:
   using: "composite"
   steps:
     - name: show franklin build action inputs
-      run: echo "${{ toJSON(github.event.inputs) }}"
+      run: echo "${{ toJSON(inputs) }}"
       shell: bash
     # =========== #
     # CACHE SETUP #
