@@ -80,6 +80,8 @@ runs:
     # =========== #
     # CACHE SETUP #
     # =========== #
+    - name: show inputs
+      run: echo "${{ toJSON(github.event.inputs) }}"
     - uses: actions/cache@v3
       with:
         path: |
