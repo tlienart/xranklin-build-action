@@ -163,7 +163,7 @@ runs:
            mv ttfx/ttfx ${{ inputs.SITE_FOLDER }}/__site/. || true;
            '
       shell: bash
-      if: ${{ inputs.TTFX == 'true' && (inputs.DEPLOY == 'true') }}
+      if: ${{ (inputs.TTFX == 'true') && (inputs.DEPLOY == 'true') }}
 
     # ========== #
     # DEPLOYMENT #
