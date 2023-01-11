@@ -84,8 +84,8 @@ if lunr
         println()
         Pkg.add("NodeJS_16_jll")
         using NodeJS_16_jll
-        run(`$(npm) install cheerio`)
-        run(`$(npm) install lunr`)
+        run(`$(npm) install cheerio --quiet`)
+        run(`$(npm) install lunr --quiet`)
         bk = pwd()
         isempty(site_folder) || cd(site_folder)
         try

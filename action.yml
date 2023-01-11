@@ -171,7 +171,10 @@ runs:
       shell: bash
       if: ${{ (inputs.TTFX == 'true') && (inputs.DEPLOY == 'true') }}
 
-    # upload artifacts
+    # ========= #
+    # ARTIFACTS #
+    # ========= #
+    - run: ls -aoh
     - uses: actions/upload-artifact@v3
       with:
         name: website
