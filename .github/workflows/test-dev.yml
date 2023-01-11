@@ -15,4 +15,5 @@ jobs:
         with:
           SITE_FOLDER: "test/"
           DEPLOY: false
+          UPLOAD_ARTIFACTS: true
           LUNR: true
