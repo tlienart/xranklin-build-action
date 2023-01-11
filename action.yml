@@ -195,7 +195,7 @@ runs:
         git config user.email "<>"
         git checkout -B ${{ inputs.DEPLOY_BRANCH }}
         mkdir -p ${{inputs.PREVIEW}}
-        git checkout ${git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'}
+        git checkout $(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
       if: ${{ (inputs.PREVIEW != '') && (inputs.DEPLOY == 'true') }}
       shell: bash
 
