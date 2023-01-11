@@ -64,14 +64,6 @@ inputs:
     required: false
     default: false
 
-  # ADVANCED BUILD OPTIONS
-  CLEAR_CACHE:
-    required: false
-    default: true
-  CACHE_KEY:
-    required: false
-    default: "franklin-cache"
-
   # ONLY FOR XRANKLIN DEVELOPMENT PURPOSES, SHOULD NOT BE USED BY USER
   TTFX:
     required: false
@@ -80,17 +72,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    # =========== #
-    # CACHE SETUP #
-    # =========== #
-    - uses: actions/cache@v3
-      with:
-        path: |
-              ${{ inputs.SITE_FOLDER }}/__cache
-              ${{ inputs.SITE_FOLDER }}/__site
-        key: ${{ runner.os }}-${{ inputs.CACHE_KEY }}-${{ github.sha }}
-        restore-keys: ${{ runner.os }}-${{ inputs.CACHE_KEY }}-
-
     # ============ #
     # DEPENDENCIES #
     # ============ #

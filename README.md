@@ -20,8 +20,6 @@ jobs:
           BASE_URL_PREFIX: "Xranklin.jl"
           PYTHON_LIBS: "matplotlib pandas ansi2html"
           LUNR: true
-          CLEAR_CACHE: ${{ contains(github.event.head_commit.message, '[clear]') }}
-          CACHE_KEY: "franklin-cache"
 ```
 
 ## Action Options
@@ -107,12 +105,3 @@ It also allows you to specify Julia code to run before and after the build proce
 | `DISPLAY_SERVER` | `""` | If you make use of Plots.jl on your website set this to `"xvfb-run"` | `"xvfb-run"`, ... |
 | `LATEX` | `false` | Set this to `true` if you make use of packages that require LaTeX (e.g. PGFPlots.jl etc.) | {`false`, `true`} |
 | `GNUPLOT` | `false` | Set this to `true` if you make use of GnuPlot (e.g. via Gaston.jl, Gnuplot.jl) | {`false`, `true`} |
-
-### Advanced build options
-
-Using the GitHub cache may speed things up when you make a sequence of changes to the website within a short period of time (the GitHub cache lasts 7 days).
-
-| **Key** |  **Default** | **Purpose** |
-| ------- | ------------ | ----------- |
-| `CLEAR_CACHE` | `true` | If `true`, force-clear the cache that may be available on GitHub to make sure the website is built from a clean slate. Setting this to `false` is still experimental and should mostly be used when you're only making small changes to your site. |
-| `CACHE_KEY` | `"franklin-cache"` | Key to use for the GitHub cache. |
