@@ -64,14 +64,6 @@ inputs:
     required: false
     default: false
 
-  # ADVANCED BUILD OPTIONS
-  CLEAR_CACHE:
-    required: false
-    default: true
-  CACHE_KEY:
-    required: false
-    default: "franklin-cache"
-
   # ONLY FOR XRANKLIN DEVELOPMENT PURPOSES, SHOULD NOT BE USED BY USER
   TTFX:
     required: false
@@ -80,17 +72,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    # =========== #
-    # CACHE SETUP #
-    # =========== #
-    - uses: actions/cache@v3
-      with:
-        path: |
-              ${{ inputs.SITE_FOLDER }}/__cache
-              ${{ inputs.SITE_FOLDER }}/__site
-        key: ${{ runner.os }}-${{ inputs.CACHE_KEY }}-${{ github.sha }}
-        restore-keys: ${{ runner.os }}-${{ inputs.CACHE_KEY }}-
-
     # ============ #
     # DEPENDENCIES #
     # ============ #
@@ -186,17 +167,6 @@ runs:
     - run: |
         touch ${{ inputs.SITE_FOLDER }}__site/.nojekyll
       if: ${{ inputs.DEPLOY == 'true' }}
-      shell: bash
-
-    # avoid issue with the deploy action
-    # see https://github.com/JamesIves/github-pages-deploy-action/issues/1292
-    - run: |
-        git config user.name "GA Bot"
-        git config user.email "<>"
-        git checkout -B ${{ inputs.DEPLOY_BRANCH }}
-        mkdir -p ${{inputs.PREVIEW}}
-        git checkout $(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
-      if: ${{ (inputs.PREVIEW != '') && (inputs.DEPLOY == 'true') }}
       shell: bash
 
     - uses: JamesIves/github-pages-deploy-action@releases/v4
