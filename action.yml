@@ -20,6 +20,9 @@ inputs:
   DEPLOY_BRANCH:
     required: false
     default: "gh-pages"
+  UPLOAD_ARTIFACTS:
+    required: false
+    default: false
   LUNR:
     required: false
     default: false
@@ -96,32 +99,35 @@ runs:
         python-version: '3.10'
       if: inputs.PYTHON_LIBS != ''
 
-    - run: '
-           pip install ${{ inputs.PYTHON_LIBS }};
-           export PYTHON=$(which python);
-           '
-      shell: bash
+    - run: |
+        pip install ${{ inputs.PYTHON_LIBS }}
+        export PYTHON=$(which python)
       if: ${{ inputs.PYTHON_LIBS != '' }}
+      shell: bash
 
     # Apt-get update if necessary
-    - run: sudo apt-get update -qq
-      shell: bash
+    - run: |
+        sudo apt-get update -qq
       if: ${{ inputs.PLOTS != '' || inputs.LATEX == 'true' || inputs.GNUPLOT == 'true' }}
+      shell: bash
 
     # QT dependencies for Plots with GR backend
-    - run: sudo apt-get install -y qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools
-      shell: bash
+    - run: |
+        sudo apt-get install -y qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools
       if: ${{ inputs.PLOTS != '' }}
+      shell: bash
 
     # LaTeX* deps for PGFPlotsX etc
-    - run: sudo apt install -y pdf2svg texlive-latex-base texlive-binaries texlive-pictures texlive-latex-extra texlive-luatex
-      shell: bash
+    - run: |
+        sudo apt install -y pdf2svg texlive-latex-base texlive-binaries texlive-pictures texlive-latex-extra texlive-luatex
       if: ${{ inputs.LATEX == 'true' }}
+      shell: bash
 
     # Gnuplot for Gaston etc
-    - run: sudo apt-get install -y gnuplot
-      shell: bash
+    - run: |
+        sudo apt-get install -y gnuplot
       if: ${{ inputs.GNUPLOT == 'true' }}
+      shell: bash
 
     # ================ #
     # BUILDING WEBSITE #
@@ -132,8 +138,8 @@ runs:
         version: ${{ inputs.JULIA_VERSION }}
 
     # Building website
-    - run: ${{ inputs.DISPLAY_SERVER }} julia --color=yes "$GITHUB_ACTION_PATH"/main.jl
-      shell: bash
+    - run: |
+        ${{ inputs.DISPLAY_SERVER }} julia --color=yes "$GITHUB_ACTION_PATH"/main.jl
       env:
         JULIA_PRE:        ${{ inputs.JULIA_PRE }}
         PYTHON_LIBS:      ${{ inputs.PYTHON_LIBS }}
@@ -147,6 +153,7 @@ runs:
         FRANKLIN_REPO:    ${{ inputs.FRANKLIN_REPO }}
         FRANKLIN_VERSION: ${{ inputs.FRANKLIN_VERSION }}
         FRANKLIN_BRANCH:  ${{ inputs.FRANKLIN_BRANCH  }}        
+      shell: bash
 
     # ============================ #
     # TTFX (only for Xranklin dev) #
@@ -158,19 +165,37 @@ runs:
       if: ${{ (inputs.TTFX == 'true') && (inputs.DEPLOY == 'true') }}
 
     # OR pipe ensures continue on fail
-    - run: '
-           rm -rf ${{ inputs.SITE_FOLDER }}/__site/ttfx || true;
-           mv ttfx/ttfx ${{ inputs.SITE_FOLDER }}/__site/. || true;
-           '
+    - run: |
+           rm -rf ${{ inputs.SITE_FOLDER }}/__site/ttfx || true
+           mv ttfx/ttfx ${{ inputs.SITE_FOLDER }}/__site/. || true
       shell: bash
       if: ${{ (inputs.TTFX == 'true') && (inputs.DEPLOY == 'true') }}
+
+    # upload artifacts
+    - uses: actions/upload-artifact@v3
+      with:
+        name: website
+        path: __site
+      if: ${{ (inputs.UPLOAD_ARTIFACTS == 'true') }}
 
     # ========== #
     # DEPLOYMENT #
     # ========== #
-    - run: touch ${{ inputs.SITE_FOLDER }}__site/.nojekyll
+    - run: |
+        touch ${{ inputs.SITE_FOLDER }}__site/.nojekyll
       shell: bash
       if: ${{ inputs.DEPLOY == 'true' }}
+
+    # avoid issue with the deploy action
+    # see https://github.com/JamesIves/github-pages-deploy-action/issues/1292
+    - run: |
+        git config user.name "GA Bot"
+        git config user.email "<>"
+        git checkout -B ${{ inputs.DEPLOY_BRANCH }}
+        mkdir -p ${{inputs.PREVIEW}}
+        git checkout ${git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'}
+      if: ${{ (inputs.PREVIEW != '') && (inputs.DEPLOY == 'true') }}
+      shell: bash
 
     - uses: JamesIves/github-pages-deploy-action@releases/v4
       with:
