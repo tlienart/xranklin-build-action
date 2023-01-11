@@ -127,7 +127,6 @@ runs:
         SITE_FOLDER:      ${{ inputs.SITE_FOLDER }}
         LUNR:             ${{ inputs.LUNR }}
         LUNR_BUILDER:     ${{ inputs.LUNR_BUILDER }}
-        CLEAR_CACHE:      ${{ inputs.CLEAR_CACHE }}
         BASE_URL_PREFIX:  ${{ inputs.BASE_URL_PREFIX }}
         PREVIEW:          ${{ inputs.PREVIEW }}
         JULIA_POST:       ${{ inputs.JULIA_POST }}

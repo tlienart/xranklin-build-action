@@ -20,7 +20,6 @@ end
 @g "site_folder"
 @g "lunr" Bool
 @g "lunr_builder"
-@g "clear_cache" Bool
 @g "base_url_prefix"
 @g "preview"
 @g "julia_post"
@@ -68,7 +67,6 @@ end
 using Xranklin
 build(
     site_folder;
-    clear=clear_cache,
     prefix=joinpath(base_url_prefix, preview),
     cleanup=false
 )
