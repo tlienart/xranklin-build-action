@@ -174,11 +174,10 @@ runs:
     # ========= #
     # ARTIFACTS #
     # ========= #
-    - run: ls -aoh
     - uses: actions/upload-artifact@v3
       with:
         name: website
-        path: __site
+        path: ${{ inputs.SITE_FOLDER }}__site
       if: ${{ (inputs.UPLOAD_ARTIFACTS == 'true') }}
 
     # ========== #
@@ -186,8 +185,8 @@ runs:
     # ========== #
     - run: |
         touch ${{ inputs.SITE_FOLDER }}__site/.nojekyll
-      shell: bash
       if: ${{ inputs.DEPLOY == 'true' }}
+      shell: bash
 
     # avoid issue with the deploy action
     # see https://github.com/JamesIves/github-pages-deploy-action/issues/1292
