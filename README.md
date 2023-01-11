@@ -24,6 +24,8 @@ jobs:
           CACHE_KEY: "franklin-cache"
 ```
 
+See a working repo with a very simple site and its development workflow [here](https://github.com/tlienart/xranklin-build-tester). It also shows how you can get PRs deployed automatically to a dedicated URL (e.g. `/previews/PR123/`).
+
 ## Action Options
 
 None of the options are required, check the default values.
