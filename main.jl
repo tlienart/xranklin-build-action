@@ -64,6 +64,7 @@ else
         rev=franklin_branch
     )
 end
+Pkg.instantiate()
 using Xranklin
 build(
     site_folder;
