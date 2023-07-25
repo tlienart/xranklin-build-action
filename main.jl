@@ -53,7 +53,6 @@ end
 
 # -----------------------------------------------------------------------------
 # XRANKLIN BUILD
-Pkg.add("Reexport") # should have to be explicitly done but seems to help
 if !isempty(franklin_version) && franklin_branch == "main"
     Pkg.add(
         url=franklin_repo,
