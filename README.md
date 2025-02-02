@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: tlienart/xranklin-build-action@main
         with:
           SITE_FOLDER: "docs/"
