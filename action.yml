@@ -75,7 +75,7 @@ runs:
     # ============ #
     # DEPENDENCIES #
     # ============ #
-    - uses: actions/setup-python@v4
+    - uses: actions/setup-python@v5
       with:
         python-version: '3.10'
       if: inputs.PYTHON_LIBS != ''
@@ -114,7 +114,7 @@ runs:
     # BUILDING WEBSITE #
     # ================ #
     # Julia
-    - uses: julia-actions/setup-julia@v1
+    - uses: julia-actions/setup-julia@v2
       with:
         version: ${{ inputs.JULIA_VERSION }}
 
